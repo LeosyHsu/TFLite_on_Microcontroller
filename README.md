@@ -36,10 +36,12 @@ If you want to contribute to models, be sure to review the [contribution guideli
 - [Training for other categories](#training-for-other-categories)
 - [Understanding the architecture](#understanding-the-architecture)
 
+---
 
 # Installation and setup
 
 ```
+pip install contextlib2
 pip install tensorflow==1.5.0
 pip install numpy
 pip install pillow
