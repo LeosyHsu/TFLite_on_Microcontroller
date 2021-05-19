@@ -1,51 +1,22 @@
-# TFLite on Microcontroller
+## Training a model with MSCOCO dataset
 
-This repository contains a number of different models implemented in [TensorFlow](https://www.tensorflow.org):
+The following document will walk you through the process of training your own
+250 KB embedded vision model using scripts that are easy to run. You can use
+either the [Visual Wake Words dataset](https://arxiv.org/abs/1906.05721) for
+person detection, or choose one of the [80
+categories from the MSCOCO dataset](http://cocodataset.org/#explore).
 
-The [slim folder](research/slim) is a new lightweight high-level API of TensorFlow(tensorflow.contrib.slim) for defining, traing and evaluating complex models. You can easily train a model on the microcontroller.
+This model will take several days to train on a powerful machine with GPUs. We
+recommend using a [Google Cloud Deep
+Learning VM](https://cloud.google.com/deep-learning-vm/).
 
-## Citation
-"TensorFlow-Slim image classification model library"
-N. Silberman and S. Guadarrama, 2016.
-https://github.com/tensorflow/models/tree/master/research/slim
-
-## Contribution guidelines
-
-If you want to contribute to models, be sure to review the [contribution guidelines](CONTRIBUTING.md).
-
-## License
-
-[Apache License 2.0](LICENSE)
-
-## Table of contents
-- [TFLite on Microcontroller](#tflite-on-microcontroller)
-  - [Citation](#citation)
-  - [Contribution guidelines](#contribution-guidelines)
-  - [License](#license)
-  - [Table of contents](#table-of-contents)
-- [Installation and setup](#installation-and-setup)
-- [Building the dataset](#building-the-dataset)
-- [Training the model](#training-the-model)
-- [TensorBoard](#tensorboard)
-- [Evaluating the model](#evaluating-the-model)
-- [Exporting the model to TensorFlow Lite](#exporting-the-model-to-tensorflow-lite)
-  - [Exporting to a GraphDef protobuf file](#exporting-to-a-graphdef-protobuf-file)
-  - [Freezing the weights](#freezing-the-weights)
-  - [Quantizing and converting to TensorFlow Lite](#quantizing-and-converting-to-tensorflow-lite)
-- [Converting into a C source file](#converting-into-a-c-source-file)
-- [Training for other categories](#training-for-other-categories)
-- [Understanding the architecture](#understanding-the-architecture)
-
-
-# Installation and setup
 
 ```
+pip install contextlib2
 pip install tensorflow==1.5.0
-pip install numpy
-pip install pillow
 ```
 
-# Building the dataset
+### Building the dataset
 
 In order to train a person detector model, we need a large collection of images
 that are labeled depending on whether or not they have people in them. The
@@ -56,8 +27,8 @@ data without manually registering too, and Slim provides a convenient script to
 grab it automatically:
 
 ```
-chmod +x slim/datasets/download_mscoco.sh
-bash slim/datasets/download_mscoco.sh coco
+chmod +x research/slim/datasets/download_mscoco.sh
+bash research/slim/datasets/download_mscoco.sh coco
 ```
 
 This is a large download, about 40GB, so it will take a while and you'll need
@@ -76,7 +47,7 @@ too tiny to be recognizable we also need to exclude very small bounding boxes.
 Slim contains a script to convert the bounding box into labels:
 
 ```
-python slim/datasets/build_visualwakewords_data.py \
+python research/slim/datasets/build_visualwakewords_data.py \
     --train_image_dir=coco/raw-data/train2014 \
     --val_image_dir=coco/raw-data/val2014
     --train_annotations_file=coco/raw-data/annotations/instances_train2014.json \
@@ -95,7 +66,7 @@ represents a very common task that we need to accomplish with tight resource
 constraints. We're hoping to see it drive even better models for this and
 similar tasks.
 
-# Training the model
+### Training the model
 
 One of the nice things about using tf.slim to handle the training is that the
 parameters you commonly need to modify are available as command line arguments,
@@ -103,7 +74,7 @@ so we can just call the standard `train_image_classifier.py` script to train
 our model. You can use this command to build the model we use in the example:
 
 ```
-python slim/train_image_classifier.py \
+python research/slim/train_image_classifier.py \
     --train_dir=vww_96_grayscale \
     --dataset_name=visualwakewords \
     --dataset_split_name=train \
@@ -191,7 +162,7 @@ working well you should see a noticeable drop if you wait an hour or so and
 check back. This kind of variation is a lot easier to see in a graph, which is
 one of the main reasons to try TensorBoard.
 
-# TensorBoard
+### TensorBoard
 
 TensorBoard is a web application that lets you view data visualizations from
 TensorFlow training sessions, and it's included by default in most cloud
@@ -224,7 +195,7 @@ essential as the loss graphs, but it can be useful to ensure the dataset is what
 you expect, and it is interesting to see the examples updating as training
 progresses.
 
-# Evaluating the model
+### Evaluating the model
 
 The loss function correlates with how well your model is training, but it isn't
 a direct, understandable metric. What we really care about is how many people
@@ -233,7 +204,7 @@ separate script. You don't need to wait until the model is fully trained, you
 can check the accuracy of any checkpoints in the `--train_dir` folder.
 
 ```
-python slim/eval_image_classifier.py \
+python research/slim/eval_image_classifier.py \
     --alsologtostderr \
     --checkpoint_path=vww_96_grayscale/model.ckpt-698580 \
     --dataset_dir=coco/processed/ \
@@ -263,14 +234,14 @@ converting to a percentage. If you follow the example script, you should expect
 a fully-trained model to achieve an accuracy of around 84% after one million
 steps, and show a loss of around 0.4.
 
-# Exporting the model to TensorFlow Lite
+### Exporting the model to TensorFlow Lite
 
 When the model has trained to an accuracy you're happy with, you'll need to
 convert the results from the TensorFlow training environment into a form you
 can run on an embedded device. As we've seen in previous chapters, this can be
 a complex process, and tf.slim adds a few of its own wrinkles too.
 
-## Exporting to a GraphDef protobuf file
+#### Exporting to a GraphDef protobuf file
 
 Slim generates the architecture from the model_name every time one of its
 scripts is run, so for a model to be used outside of Slim it needs to be saved
@@ -278,7 +249,7 @@ in a common format. We're going to use the GraphDef protobuf serialization
 format, since that's understood by both Slim and the rest of TensorFlow.
 
 ```
-python slim/export_inference_graph.py \
+python research/slim/export_inference_graph.py \
     --alsologtostderr \
     --dataset_name=visualwakewords \
     --model_name=mobilenet_v1_025 \
@@ -291,7 +262,7 @@ If this succeeds, you should have a new 'vww_96_grayscale_graph.pb' file in
 your home folder. This contains the layout of the operations in the model, but
 doesn't yet have any of the weight data.
 
-## Freezing the weights
+#### Freezing the weights
 
 The process of storing the trained weights together with the operation graph is
 known as freezing. This converts all of the variables in the graph to
@@ -302,7 +273,7 @@ tensorflow repository, so we have to download this from GitHub before running
 this command.
 
 ```
-python slim/freeze_graph.py \
+python research/slim/freeze_graph.py \
     --input_graph=vww_96_grayscale_graph.pb \
     --input_checkpoint=vww_96_grayscale/model.ckpt-1000000 \
     --input_binary=true --output_graph=vww_96_grayscale_frozen.pb \
@@ -311,8 +282,7 @@ python slim/freeze_graph.py \
 
 After this, you should see a file called 'vww_96_grayscale_frozen.pb'.
 
-
-## Quantizing and converting to TensorFlow Lite
+#### Quantizing and converting to TensorFlow Lite
 
 Quantization is a tricky and involved process, and it's still very much an
 active area of research, so taking the float graph that we've trained so far
@@ -367,7 +337,7 @@ tflite_quant_model = converter.convert()
 open("vww_96_grayscale_quantized.tflite", "wb").write(tflite_quant_model)
 ```
 
-# Converting into a C source file
+#### Converting into a C source file
 
 The converter writes out a file, but most embedded devices don't have a file
 system. To access the serialized data from our program, we have to compile it
@@ -384,14 +354,14 @@ convert the file into a C data array.
 You can now replace the existing person_detect_model_data.cc file with the
 version you've trained, and be able to run your own model on embedded devices.
 
-# Training for other categories
+### Training for other categories
 
 There are over 60 different object types in the MS-COCO dataset, so an easy way
 to customize your model would be to choose one of those instead of 'person'
 when you build the training dataset. Here's an example that looks for cars:
 
 ```
-python slim/datasets/build_visualwakewords_data.py
+python research/slim/datasets/build_visualwakewords_data.py
     --logtostderr \
     --train_image_dir=coco/raw-data/train2014 \
     --val_image_dir=coco/raw-data/val2014 \
@@ -411,7 +381,7 @@ able to use transfer learning to help you train on a custom dataset you've
 gathered, even if it's much smaller. We don't have an example of this
 yet, but we hope to share one soon.
 
-# Understanding the architecture
+### Understanding the architecture
 
 [MobileNets](https://arxiv.org/abs/1704.04861) are a family of architectures
 designed to provide good accuracy for as few weight parameters and arithmetic
