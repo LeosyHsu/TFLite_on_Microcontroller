@@ -38,7 +38,9 @@ If you want to contribute to models, be sure to review the [contribution guideli
 
 ---
 
-# Installation and setup
+# Installation and setup  
+
+[back](#table-of-contents)
 
 ```
 pip install contextlib2
@@ -48,6 +50,7 @@ pip install pillow
 ```
 
 # Building the dataset
+[back](#table-of-contents)
 
 In order to train a person detector model, we need a large collection of images
 that are labeled depending on whether or not they have people in them. The
@@ -98,6 +101,7 @@ constraints. We're hoping to see it drive even better models for this and
 similar tasks.
 
 # Training the model
+[back](#table-of-contents)
 
 One of the nice things about using tf.slim to handle the training is that the
 parameters you commonly need to modify are available as command line arguments,
@@ -194,6 +198,7 @@ check back. This kind of variation is a lot easier to see in a graph, which is
 one of the main reasons to try TensorBoard.
 
 # TensorBoard
+[back](#table-of-contents)
 
 TensorBoard is a web application that lets you view data visualizations from
 TensorFlow training sessions, and it's included by default in most cloud
@@ -227,6 +232,7 @@ you expect, and it is interesting to see the examples updating as training
 progresses.
 
 # Evaluating the model
+[back](#table-of-contents)
 
 The loss function correlates with how well your model is training, but it isn't
 a direct, understandable metric. What we really care about is how many people
@@ -266,6 +272,7 @@ a fully-trained model to achieve an accuracy of around 84% after one million
 steps, and show a loss of around 0.4.
 
 # Exporting the model to TensorFlow Lite
+[back](#table-of-contents)
 
 When the model has trained to an accuracy you're happy with, you'll need to
 convert the results from the TensorFlow training environment into a form you
@@ -273,6 +280,7 @@ can run on an embedded device. As we've seen in previous chapters, this can be
 a complex process, and tf.slim adds a few of its own wrinkles too.
 
 ## Exporting to a GraphDef protobuf file
+[back](#table-of-contents)
 
 Slim generates the architecture from the model_name every time one of its
 scripts is run, so for a model to be used outside of Slim it needs to be saved
@@ -294,6 +302,7 @@ your home folder. This contains the layout of the operations in the model, but
 doesn't yet have any of the weight data.
 
 ## Freezing the weights
+[back](#table-of-contents)
 
 The process of storing the trained weights together with the operation graph is
 known as freezing. This converts all of the variables in the graph to
@@ -315,6 +324,7 @@ After this, you should see a file called 'vww_96_grayscale_frozen.pb'.
 
 
 ## Quantizing and converting to TensorFlow Lite
+[back](#table-of-contents)
 
 Quantization is a tricky and involved process, and it's still very much an
 active area of research, so taking the float graph that we've trained so far
@@ -370,6 +380,7 @@ open("vww_96_grayscale_quantized.tflite", "wb").write(tflite_quant_model)
 ```
 
 # Converting into a C source file
+[back](#table-of-contents)
 
 The converter writes out a file, but most embedded devices don't have a file
 system. To access the serialized data from our program, we have to compile it
@@ -387,6 +398,7 @@ You can now replace the existing person_detect_model_data.cc file with the
 version you've trained, and be able to run your own model on embedded devices.
 
 # Training for other categories
+[back](#table-of-contents)
 
 There are over 60 different object types in the MS-COCO dataset, so an easy way
 to customize your model would be to choose one of those instead of 'person'
@@ -414,6 +426,7 @@ gathered, even if it's much smaller. We don't have an example of this
 yet, but we hope to share one soon.
 
 # Understanding the architecture
+[back](#table-of-contents)
 
 [MobileNets](https://arxiv.org/abs/1704.04861) are a family of architectures
 designed to provide good accuracy for as few weight parameters and arithmetic
