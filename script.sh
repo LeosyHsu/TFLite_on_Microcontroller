@@ -6,7 +6,7 @@ bash slim/datasets/download_mscoco.sh coco
 
 python slim/datasets/build_visualwakewords_data.py \
     --train_image_dir=coco/raw-data/train2014 \
-    --val_image_dir=coco/raw-data/val2014
+    --val_image_dir=coco/raw-data/val2014 \
     --train_annotations_file=coco/raw-data/annotations/instances_train2014.json \
     --val_annotations_file=coco/raw-data/annotations/instances_val2014.json \
     --output_dir=coco/processed \

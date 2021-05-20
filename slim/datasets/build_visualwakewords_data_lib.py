@@ -34,7 +34,7 @@ import PIL.Image
 
 import tensorflow as tf
 
-from datasets import dataset_utils
+import dataset_utils
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
