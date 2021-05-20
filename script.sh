@@ -22,7 +22,7 @@ python slim/train_image_classifier.py \
     --model_name=mobilenet_v1_025 \
     --preprocessing_name=mobilenet_v1 \
     --train_image_size=96 \
-    --input_grayscale=True \
+    --use_grayscale=True \
     --save_summaries_secs=300 \
     --learning_rate=0.045 \
     --label_smoothing=0.1 \
