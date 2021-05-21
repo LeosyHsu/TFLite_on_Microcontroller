@@ -18,15 +18,11 @@ If you want to contribute to models, be sure to review the [contribution guideli
 [Apache License 2.0](LICENSE)
 
 ## Table of contents
-- [TFLite on Microcontroller](#tflite-on-microcontroller)
-  - [Citation](#citation)
-  - [Contribution guidelines](#contribution-guidelines)
-  - [License](#license)
-  - [Table of contents](#table-of-contents)
+
 - [Installation and setup](#installation-and-setup)
+  - [Requirements](#requirements)
 - [Building the dataset](#building-the-dataset)
 - [Training the model](#training-the-model)
-- [TensorBoard](#tensorboard)
 - [Evaluating the model](#evaluating-the-model)
 - [Exporting the model to TensorFlow Lite](#exporting-the-model-to-tensorflow-lite)
   - [Exporting to a GraphDef protobuf file](#exporting-to-a-graphdef-protobuf-file)
@@ -38,16 +34,18 @@ If you want to contribute to models, be sure to review the [contribution guideli
 
 ---
 
-# Installation and setup  
 
+# Installation and setup
 [back](#table-of-contents)
 
-```
-pip install contextlib2
-pip install tensorflow==1.5.0
-pip install numpy
-pip install pillow
-```
+## Requirements
+
+Python `3.6.6` with the following `pip3 install -U -r requirements.txt` packages:
+
+- `tensorflow`
+- `contextlib2`
+- `pillow`
+
 
 # Building the dataset
 [back](#table-of-contents)
@@ -154,7 +152,7 @@ a few hours if you want to experiment early.
     [HM01B0](https://himax.com.tw/products/cmos-image-sensor/image-sensors/hm01b0/)
     camera we're using on the SparkFun Edge board is monochrome, so to get the
     best results we have to train our model on black and white images too, so we
-    pass in the `--input_grayscale` flag to enable that preprocessing.
+    pass in the `--use_grayscale` flag to enable that preprocessing.
 -   The `--learning_rate`, `--label_smoothing`, `--learning_rate_decay_factor`,
     `--num_epochs_per_decay`, `--moving_average_decay` and `--batch_size` are
     all parameters that control how weights are updated during the training
@@ -197,7 +195,7 @@ working well you should see a noticeable drop if you wait an hour or so and
 check back. This kind of variation is a lot easier to see in a graph, which is
 one of the main reasons to try TensorBoard.
 
-# TensorBoard
+#TensorBoard
 [back](#table-of-contents)
 
 TensorBoard is a web application that lets you view data visualizations from
@@ -249,7 +247,7 @@ python slim/eval_image_classifier.py \
     --dataset_split_name=val \
     --model_name=mobilenet_v1_025 \
     --preprocessing_name=mobilenet_v1 \
-    --input_grayscale=True \
+    --use_grayscale=True \
     --train_image_size=96
 ```
 
@@ -293,7 +291,7 @@ python slim/export_inference_graph.py \
     --dataset_name=visualwakewords \
     --model_name=mobilenet_v1_025 \
     --image_size=96 \
-    --input_grayscale=True \
+    --use_grayscale=True \
     --output_file=vww_96_grayscale_graph.pb
 ```
 

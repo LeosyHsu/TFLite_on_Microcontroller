@@ -42,7 +42,7 @@ python slim/eval_image_classifier.py \
     --dataset_split_name=val \
     --model_name=mobilenet_v1_025 \
     --preprocessing_name=mobilenet_v1 \
-    --input_grayscale=True \
+    --use_grayscale=True \
     --train_image_size=96
 
 # Exporting the model to TensorFlow Lite
@@ -52,18 +52,18 @@ python slim/export_inference_graph.py \
     --dataset_name=visualwakewords \
     --model_name=mobilenet_v1_025 \
     --image_size=96 \
-    --input_grayscale=True \
+    --use_grayscale=True \
     --output_file=vww_96_grayscale_graph.pb
 
 ## Freezing the weights
 python slim/freeze_graph.py \
     --input_graph=vww_96_grayscale_graph.pb \
     --input_checkpoint=vww_96_grayscale/model.ckpt-1000000 \
-    --input_binary=true --output_graph=vww_96_grayscale_frozen.pb \
+    --use_binary=true --output_graph=vww_96_grayscale_frozen.pb \
     --output_node_names=MobilenetV1/Predictions/Reshape_1
 
 ## Quantizing and converting to TensorFlow Lite
-python quantizing_and_converting_to_tflie.py
+python quantizing_and_converting_to_tflite.py
 
 
 

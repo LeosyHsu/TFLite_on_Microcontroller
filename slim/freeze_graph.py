@@ -37,6 +37,7 @@ import re
 import sys
 
 from absl import app
+import tensorflow as tf
 
 from google.protobuf import text_format
 from tensorflow.core.framework import graph_pb2
@@ -49,9 +50,10 @@ from tensorflow.python.platform import gfile
 from tensorflow.python.saved_model import loader
 from tensorflow.python.saved_model import tag_constants
 from tensorflow.python.tools import saved_model_utils
-from tensorflow.python.training import checkpoint_management
-from tensorflow.python.training import py_checkpoint_reader
+#from tensorflow.python.training import checkpoint_management
+#from tensorflow.python.training import py_checkpoint_reader
 from tensorflow.python.training import saver as saver_lib
+
 
 
 def _has_no_variables(sess):
@@ -115,7 +117,7 @@ def freeze_graph_with_def_protos(input_graph_def,
 
   # 'input_checkpoint' may be a prefix if we're using Saver V2 format
   if (not input_saved_model_dir and
-      not checkpoint_management.checkpoint_exists(input_checkpoint)):
+      not tf.train.checkpoint_exists(input_checkpoint)):
     raise ValueError("Input checkpoint '" + input_checkpoint +
                      "' doesn't exist!")
 
@@ -152,7 +154,7 @@ def freeze_graph_with_def_protos(input_graph_def,
       loader.load(sess, saved_model_tags, input_saved_model_dir)
     else:
       var_list = {}
-      reader = py_checkpoint_reader.NewCheckpointReader(input_checkpoint)
+      reader = tf.train.NewCheckpointReader(input_checkpoint)
       var_to_shape_map = reader.get_variable_to_shape_map()
 
       # List of all partition variables. Because the condition is heuristic

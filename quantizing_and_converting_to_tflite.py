@@ -5,15 +5,13 @@ import numpy as np
 
 def representative_dataset_gen():
 
-  record_iterator =
-tf.python_io.tf_record_iterator(path='coco/processed/val.record-00000-of-00010')
+  record_iterator = tf.python_io.tf_record_iterator(path='coco/processed/val.record-00000-of-00010')
 
   count = 0
   for string_record in record_iterator:
     example = tf.train.Example()
     example.ParseFromString(string_record)
-    image_stream =
-io.BytesIO(example.features.feature['image/encoded'].bytes_list.value[0])
+    image_stream = io.BytesIO(example.features.feature['image/encoded'].bytes_list.value[0])
     image = PIL.Image.open(image_stream)
     image = image.resize((96, 96))
     image = image.convert('L')
@@ -26,8 +24,7 @@ io.BytesIO(example.features.feature['image/encoded'].bytes_list.value[0])
     if count > 300:
         break
 
-converter =
-tf.lite.TFLiteConverter.from_frozen_graph('vww_96_grayscale_frozen.pb',
+converter = tf.lite.TFLiteConverter.from_frozen_graph('vww_96_grayscale_frozen.pb',
 ['input'], ['MobilenetV1/Predictions/Reshape_1'])
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.representative_dataset = representative_dataset_gen
