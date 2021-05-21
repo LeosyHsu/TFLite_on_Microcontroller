@@ -23,6 +23,7 @@ If you want to contribute to models, be sure to review the [contribution guideli
   - [Requirements](#requirements)
 - [Building the dataset](#building-the-dataset)
 - [Training the model](#training-the-model)
+- [TensorBoard](#tensorboard)
 - [Evaluating the model](#evaluating-the-model)
 - [Exporting the model to TensorFlow Lite](#exporting-the-model-to-tensorflow-lite)
   - [Exporting to a GraphDef protobuf file](#exporting-to-a-graphdef-protobuf-file)
@@ -195,7 +196,7 @@ working well you should see a noticeable drop if you wait an hour or so and
 check back. This kind of variation is a lot easier to see in a graph, which is
 one of the main reasons to try TensorBoard.
 
-#TensorBoard
+# TensorBoard
 [back](#table-of-contents)
 
 TensorBoard is a web application that lets you view data visualizations from
